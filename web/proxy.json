@@ -1,0 +1,21 @@
+{
+  "proxy": {
+    "/api": {
+      "target": "http://localhost:9000",
+      "secure": false,
+      "pathRewrite": {
+        "^/api": ""
+      }
+    },
+    "/socket.io": {
+      "target": "http://localhost:9100",
+      "secure": false,
+      "ws": true
+    },
+    "/sockjs-node": {
+      "target": "http://localhost:9100",
+      "secure": false,
+      "ws": true
+    }
+  }
+}

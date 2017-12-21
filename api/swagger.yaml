@@ -1,0 +1,466 @@
+swagger: "2.0"
+info:
+  description: "This is an api docs for ShopBack Code Challenge"
+  version: "1.0.0"
+  title: "API"
+host: "localhost"
+basePath: "/api"
+schemes:
+- "http"
+paths:
+  /auth/register:
+    post:
+      summary: "Register account"
+      description: "Return account info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        description: "Email address"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "password"
+        description: "Password"
+        in: "body"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Register successful"
+          schema:
+            $ref: "#/definitions/User"
+  /auth/login:
+    get:
+      summary: "Get logged in user"
+      description: "Return account info"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Logged in user info"
+          schema:
+            $ref: "#/definitions/User"
+    post:
+      summary: "Login"
+      description: "Return account info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        description: "Email address"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "password"
+        description: "Password"
+        in: "body"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Login successful"
+          schema:
+            $ref: "#/definitions/User"
+    delete:
+      summary: "Logout"
+      description: "Log user out"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Logout"
+  /events:
+    get:
+      summary: "Get user's events"
+      description: "Return events list"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Events list"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Event"
+    post:
+      summary: "Create event"
+      description: "Return event info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "code"
+        description: "Event code"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "title"
+        description: "Title"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "description"
+        description: "Description"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "period"
+        description: "Period"
+        in: "body"
+        type: "object"
+        required: true
+        properties:
+          from:
+            type: "string"
+            format: "datetime"
+          to:
+            type: "string"
+            format: "datetime"
+      responses:
+        200:
+          description: "Created successful"
+          schema:
+            $ref: "#/definitions/Event"
+  /events/:id:
+    get:
+      summary: "Get event"
+      description: "Return event"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Event info"
+          schema:
+            $ref: "#/definitions/Event"
+    put:
+      summary: "Update event"
+      description: "Return event info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "code"
+        description: "Event code"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "title"
+        description: "Title"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "description"
+        description: "Description"
+        in: "body"
+        type: "string"
+        required: true
+      - name: "period"
+        description: "Period"
+        in: "body"
+        type: "object"
+        required: true
+        properties:
+          from:
+            type: "string"
+            format: "datetime"
+          to:
+            type: "string"
+            format: "datetime"
+      responses:
+        200:
+          description: "Updated successful"
+          schema:
+            $ref: "#/definitions/Event"
+    delete:
+      summary: "Delete event"
+      description: "Return result"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Delete successful"
+  /events/:code/check:
+    get:
+      summary: "Check valid event"
+      description: "Return validity"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "code"
+        description: "Event code"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Event validity"
+          schema:
+            type: "object"
+            properties:
+              code:
+                type: "number"
+              message:
+                type: "string"
+  /events/:code/join:
+    get:
+      summary: "Get event"
+      description: "Return event"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "code"
+        description: "Event code"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Event info"
+          schema:
+            $ref: "#/definitions/Event"
+  /questions/:eventId:
+    get:
+      summary: "Get event questions"
+      description: "Return questions list"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Questions list"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Question"
+    post:
+      summary: "Create question"
+      description: "Return question info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "description"
+        description: "Description"
+        in: "body"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Created successful"
+          schema:
+            $ref: "#/definitions/Question"
+  /questions/:eventId/:id:
+    put:
+      summary: "Update question"
+      description: "Return question info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "id"
+        description: "Question id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "description"
+        description: "Quetsion description"
+        in: "body"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Updated successful"
+          schema:
+            $ref: "#/definitions/Event"
+    delete:
+      summary: "Delete question"
+      description: "Return result"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "id"
+        description: "Question id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Delete successful"
+  /questions/:eventId/:id/like:
+    post:
+      summary: "Like question"
+      description: "Return question info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "id"
+        description: "Question id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Liked successful"
+          schema:
+            $ref: "#/definitions/Question"
+    delete:
+      summary: "Unlike question"
+      description: "Return result"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "id"
+        description: "Question id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Unliked successful"
+  /questions/:eventId/:id/highlight:
+    post:
+      summary: "Highlight question"
+      description: "Return question info"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "id"
+        description: "Question id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Highlighted successful"
+          schema:
+            $ref: "#/definitions/Question"
+    delete:
+      summary: "Unhighlight question"
+      description: "Return result"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        description: "Event id"
+        in: "path"
+        type: "string"
+        required: true
+      - name: "id"
+        description: "Question id"
+        in: "path"
+        type: "string"
+        required: true
+      responses:
+        200:
+          description: "Unhighlighted successful"
+definitions:
+  User:
+    type: "object"
+    required:
+    - "_id"
+    - "email"
+    properties:
+      _id:
+        type: "string"
+      email:
+        type: "string"
+  Event:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      code:
+        type: "string"
+      title:
+        type: "string"
+      description:
+        type: "string"
+      period:
+        type: "object"
+        properties:
+          from:
+            type: "string"
+            format: "datetime"
+          to:
+            type: "string"
+            format: "datetime"
+      owner:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "datetime"
+  Question:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      description:
+        type: "string"
+      highlighted:
+        type: "boolean"
+      likes:
+        type: "array"
+        items:
+          properties:
+            user:
+              type: "string"
+            createdAt:
+              type: "string"
+              format: "datetime"
+      meta:
+        type: "object"
+        properties:
+          numLikes:
+            type: "number"
+      event:
+        type: "string"
+      owner:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "datetime"
+  

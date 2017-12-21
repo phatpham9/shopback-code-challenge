@@ -1,0 +1,67 @@
+version: "3"
+
+services:
+  nginx:
+    image: nginx:1-alpine
+    depends_on:
+      - web
+      - api
+    ports:
+      - "${NGINX_PORT}:${NGINX_PORT}"
+    volumes:
+      - "./nginx.conf:/etc/nginx/conf.d/default.conf.template"
+    environment:
+      - "NGINX_HOST=${NGINX_HOST}"
+      - "NGINX_PORT=${NGINX_PORT}"
+      - "WEB_URL=${WEB_URL}"
+      - "API_URL=${API_URL}"
+      - "SOCKET_URL=${SOCKET_URL}"
+    command: ["/bin/sh", "-c", "cat /etc/nginx/conf.d/default.conf.template | sed -e 's/{NGINX_HOST}/$NGINX_HOST/' -e 's/{NGINX_PORT}/$NGINX_PORT/' -e 's/{WEB_URL}/$WEB_URL/' -e 's/{API_URL}/$API_URL/' -e 's/{SOCKET_URL}/$SOCKET_URL/' > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"]
+    restart: on-failure
+
+  web:
+    image: node:9-alpine
+    volumes:
+      - "${WEB_DIR}:${WORKING_DIR}"
+    environment:
+      - "PORT=${PORT}"
+    working_dir: "${WORKING_DIR}"
+    command: ["yarn", "start"]
+    restart: on-failure
+
+  api:
+    image: node:9-alpine
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - "${API_DIR}:${WORKING_DIR}"
+    environment:
+      - "PORT=${PORT}"
+      - "MONGO_URL=mongodb://mongo:${MONGO_PORT}/${MONGO_DATABASE}"
+      - "REDIS_URL=redis://redis:${REDIS_PORT}/${REDIS_DB_NUMBER}"
+    working_dir: "${WORKING_DIR}"
+    command: ["yarn", "start"]
+    restart: on-failure
+
+  socket:
+    image: node:9-alpine
+    volumes:
+      - "${SOCKET_DIR}:${WORKING_DIR}"
+    environment:
+      - "PORT=${PORT}"
+    working_dir: "${WORKING_DIR}"
+    command: ["yarn", "start"]
+    restart: on-failure
+
+  mongo:
+    image: mongo:3-jessie
+    volumes:
+      - "${MONGO_DIR}:/data/db"
+    restart: on-failure
+
+  redis:
+    image: redis:4-alpine
+    volumes:
+      - "${REDIS_DIR}:/data"
+    restart: on-failure
